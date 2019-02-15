@@ -1,4 +1,4 @@
-# mytasks
+# MyTasks Tool
 Python/Qt tool too keep track of the time you spend on tasks
 
 ## ToDo
