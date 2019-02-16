@@ -1,22 +1,24 @@
 #######################
-### MyTasks - v1    ###
+### MyTasks - v2    ###
 ### by schiller83   ###
 #######################
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from functools import partial
 import csv
 import os
 
 class Ui_Dialog(QtWidgets.QMainWindow):
 
     def __init__(self, fn=None,parent=None):
-            super(Ui_Dialog, self).__init__()
-            flags=QtCore.Qt.WindowMinimizeButtonHint|QtCore.Qt.WindowCloseButtonHint
-            Dialog.setWindowFlags(flags)
+        super(Ui_Dialog, self).__init__()
+        flags=QtCore.Qt.WindowMinimizeButtonHint|QtCore.Qt.WindowCloseButtonHint
+        Dialog.setWindowFlags(flags)
 
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(486, 371)
+        Dialog.setWindowTitle("MyTasks")
         self.label = QtWidgets.QLabel(Dialog)
         self.label.setGeometry(QtCore.QRect(10, 6, 100, 20))
         self.label_message = QtWidgets.QLabel(Dialog)
@@ -87,7 +89,7 @@ class Ui_Dialog(QtWidgets.QMainWindow):
         self.Button_Start.clicked.connect(self.start_clock)
         self.Button_Stop.clicked.connect(self.stop_clock)
         self.Button_Reset.clicked.connect(self.reset_table)
-        self.Button_Speichern.clicked.connect(self.save_table)
+        self.Button_Speichern.clicked.connect(partial(self.save_table,self.csvfilename))
         self.Button_Add.clicked.connect(self.add_row)
         self.Button_Remove.clicked.connect(self.remove_row)
 
@@ -123,8 +125,23 @@ class Ui_Dialog(QtWidgets.QMainWindow):
         self.tableWidget.setItem(self.curr_row, 1, QtWidgets.QTableWidgetItem(str("{:2.1f}".format(self.time_set))))
 
     def reset_table(self):
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setText("Soll vor dem Reset ein Backup gespeichert werden?")
+        msg.setWindowTitle("Backup")
+        msg.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+        msg.button(QtWidgets.QMessageBox.Yes).setText("Ja")
+        msg.button(QtWidgets.QMessageBox.No).setText("Nein")
+        retval = msg.exec_()
+
+        if retval == QtWidgets.QMessageBox.Yes:
+            dirname = os.getcwd()
+            self.backup_file = os.path.join(dirname,"tasks_bak.csv")
+            self.save_table(self.backup_file)
+
         for i in range(0,self.rownum):
-            self.tableWidget.setItem(i, 1, QtWidgets.QTableWidgetItem(str(0.0)))
+            self.tableWidget.setItem(i, 1, QtWidgets.QTableWidgetItem(str(0.0)))            
+
 
     def add_row(self):
         self.tableWidget.insertRow(self.rownum)
@@ -137,9 +154,9 @@ class Ui_Dialog(QtWidgets.QMainWindow):
         self.tableWidget.removeRow(self.curr_row)
         self.rownum = self.tableWidget.rowCount()
 
-    def save_table(self):
+    def save_table(self, csvfile):
         try:
-            with open(self.csvfilename, mode='w', newline='') as csvDataFile:
+            with open(csvfile, mode='w', newline='') as csvDataFile:
                 csv_writer = csv.writer(csvDataFile, delimiter=';')
                 for i in range(0,self.rownum):
                     csv_writer.writerow([self.tableWidget.item(i, 0).text(),self.tableWidget.item(i, 1).text()])
@@ -153,5 +170,6 @@ if __name__ == "__main__":
     Dialog = QtWidgets.QDialog()
     ui = Ui_Dialog()
     ui.setupUi(Dialog)
+    Dialog.setWindowTitle("MyTasks")
     Dialog.show()
     sys.exit(app.exec_())
