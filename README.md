@@ -1,6 +1,13 @@
 # MyTasks Tool
 Python/Qt tool too keep track of the time you spend on tasks
 
+## Release Notes v2
+Additions:
+- Possibility to make backup of tasks.csv before resetting table
+
+Fixes:
+- Window title is now MyTasks
+
 ## ToDo
 - Full english translation
 
