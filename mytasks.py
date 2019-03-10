@@ -20,9 +20,9 @@ class Ui_Dialog(QtWidgets.QMainWindow):
         Dialog.resize(486, 371)
         Dialog.setWindowTitle("MyTasks")
         self.label = QtWidgets.QLabel(Dialog)
-        self.label.setGeometry(QtCore.QRect(10, 6, 100, 20))
+        self.label.setGeometry(QtCore.QRect(10, 6, 200, 20))
         self.label_message = QtWidgets.QLabel(Dialog)
-        self.label_message.setGeometry(QtCore.QRect(120, 6, 150, 20))
+        self.label_message.setGeometry(QtCore.QRect(120, 6, 150, 25))
 
         font = QtGui.QFont()
         font.setFamily("Lato")
@@ -85,6 +85,7 @@ class Ui_Dialog(QtWidgets.QMainWindow):
         self.autosavetimer.timeout.connect(self.autosave)
 
         self.tableWidget.selectRow(0)
+        self.tableWidget.setHorizontalHeaderLabels(['Task','Zeit'])
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -101,7 +102,7 @@ class Ui_Dialog(QtWidgets.QMainWindow):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.label.setText(_translate("Dialog", "MyTasks"))
+        self.label.setText(_translate("Dialog", "MyTasks v3"))
         self.Button_Start.setText(_translate("Dialog", "Start Task"))
         self.Button_Stop.setText(_translate("Dialog", "Stop Task"))
         self.Button_Reset.setText(_translate("Dialog", "Reset"))
