@@ -1,5 +1,5 @@
 #######################
-### MyTasks - v2    ###
+### MyTasks - v3    ###
 ### by schiller83   ###
 #######################
 
@@ -81,6 +81,9 @@ class Ui_Dialog(QtWidgets.QMainWindow):
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.clock)
 
+        self.autosavetimer = QtCore.QTimer(self)
+        self.autosavetimer.timeout.connect(self.autosave)
+
         self.tableWidget.selectRow(0)
 
         self.retranslateUi(Dialog)
@@ -93,6 +96,8 @@ class Ui_Dialog(QtWidgets.QMainWindow):
         self.Button_Add.clicked.connect(self.add_row)
         self.Button_Remove.clicked.connect(self.remove_row)
 
+        self.autosave()
+
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
@@ -103,6 +108,10 @@ class Ui_Dialog(QtWidgets.QMainWindow):
         self.Button_Speichern.setText(_translate("Dialog", "Speichern"))
         self.Button_Add.setText(_translate("Dialog", "+"))
         self.Button_Remove.setText(_translate("Dialog", "-"))
+
+    def autosave(self):
+        self.autosavetimer.start(300000)
+        self.save_table(self.csvfilename)
 
     def start_clock(self):
         self.timer.start(360000)
@@ -123,6 +132,7 @@ class Ui_Dialog(QtWidgets.QMainWindow):
         self.Button_Start.setVisible(True)
         self.Button_Stop.setVisible(False)
         self.tableWidget.setItem(self.curr_row, 1, QtWidgets.QTableWidgetItem(str("{:2.1f}".format(self.time_set))))
+        self.save_table(self.csvfilename)
 
     def reset_table(self):
         msg = QtWidgets.QMessageBox()
@@ -148,11 +158,13 @@ class Ui_Dialog(QtWidgets.QMainWindow):
         self.tableWidget.setItem(self.rownum, 0, QtWidgets.QTableWidgetItem('Task Neu'))
         self.tableWidget.setItem(self.rownum, 1, QtWidgets.QTableWidgetItem('0.0'))       
         self.rownum = self.tableWidget.rowCount()
+        self.save_table(self.csvfilename)
 
     def remove_row(self):
         self.curr_row = self.tableWidget.currentRow()
         self.tableWidget.removeRow(self.curr_row)
         self.rownum = self.tableWidget.rowCount()
+        self.save_table(self.csvfilename)
 
     def save_table(self, csvfile):
         try:
