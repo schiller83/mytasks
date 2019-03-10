@@ -1,7 +1,7 @@
 # MyTasks Tool
 Python/Qt tool too keep track of the time you spend on tasks
 
-## Release Nites v3
+## Release Notes v3
 Additions:
 - Added auto save functionalities. The task.csv is now saved after stopping the clock, adding or removing rows and every 5 minutes.
 
